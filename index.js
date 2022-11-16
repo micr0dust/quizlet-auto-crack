@@ -22,7 +22,7 @@ process.on('uncaughtException', function(err) {
     let count = 0;
     console.log("嘗試獲取臨時信箱...");
     const emailpage = await browser.newPage();
-    await emailpage.goto('https://10minutemail.net/?lang=zh-tw');
+    await emailpage.goto('http://10minutemail.net/?lang=zh-tw');
     await emailpage.waitForTimeout(1000);
     await emailpage.waitForSelector('#fe_text');
     email = await emailpage.evaluate(async() => {
@@ -39,25 +39,25 @@ process.on('uncaughtException', function(err) {
     //await page.waitForNavigation();
     await emailpage.waitForTimeout(1000);
     console.log("嘗試以臨時信箱註冊...");
-    await page.waitForSelector('body > div.UIModal.UIModal-container.is-white.is-open.UIModal--fullScreen.SignupPromptModalNew--fullPageExperiment > div > div.UIModalBody > section > div.a1pcnvbg > div > form > div.UIDiv.BirthDateDropdownGroup > div > div > div:nth-child(1) > select');
-    await page.select('body > div.UIModal.UIModal-container.is-white.is-open.UIModal--fullScreen.SignupPromptModalNew--fullPageExperiment > div > div.UIModalBody > section > div.a1pcnvbg > div > form > div.UIDiv.BirthDateDropdownGroup > div > div > div:nth-child(2) > select', '6');
-    await page.select('body > div.UIModal.UIModal-container.is-white.is-open.UIModal--fullScreen.SignupPromptModalNew--fullPageExperiment > div > div.UIModalBody > section > div.a1pcnvbg > div > form > div.UIDiv.BirthDateDropdownGroup > div > div > div:nth-child(3) > select', '4');
+    await page.waitForSelector('body > div:nth-child(13) > div > div > div.c1yw38c3.c1cv2anc > section > div.avsxyiq > div > form > div.buq5sud > div > div > div');
+    await page.select('body > div:nth-child(13) > div > div > div.c1yw38c3.c1cv2anc > section > div.avsxyiq > div > form > div.buq5sud > div > div > div > div:nth-child(2) > select', '6');
+    await page.select('body > div:nth-child(13) > div > div > div.c1yw38c3.c1cv2anc > section > div.avsxyiq > div > form > div.buq5sud > div > div > div > div:nth-child(3) > select', '4');
     await page.evaluate(async() => {
-        document.querySelector('body > div.UIModal.UIModal-container.is-white.is-open.UIModal--fullScreen.SignupPromptModalNew--fullPageExperiment > div > div.UIModalBody > section > div.a1pcnvbg > div > form > div.UIDiv.BirthDateDropdownGroup > div > div > div:nth-child(1) > select > option:nth-child(34)').value = '1989';
+        document.querySelector('body > div:nth-child(13) > div > div > div.c1yw38c3.c1cv2anc > section > div.avsxyiq > div > form > div.buq5sud > div > div > div > div:nth-child(1) > select').value = '1989';
     });
-    await page.select('body > div.UIModal.UIModal-container.is-white.is-open.UIModal--fullScreen.SignupPromptModalNew--fullPageExperiment > div > div.UIModalBody > section > div.a1pcnvbg > div > form > div.UIDiv.BirthDateDropdownGroup > div > div > div:nth-child(1) > select', '1989');
+    await page.select('body > div:nth-child(13) > div > div > div.c1yw38c3.c1cv2anc > section > div.avsxyiq > div > form > div.buq5sud > div > div > div > div:nth-child(1) > select', '1989');
     await page.type('#email', email);
     console.log("帳號: " + email);
     await page.type('#password1', password);
     console.log("密碼: " + password);
-    await page.click('body > div.UIModal.UIModal-container.is-white.is-open.UIModal--fullScreen.SignupPromptModalNew--fullPageExperiment > div > div.UIModalBody > section > div.a1pcnvbg > div > form > div:nth-child(5) > label > input');
+    await page.click('body > div:nth-child(13) > div > div > div.c1yw38c3.c1cv2anc > section > div.avsxyiq > div > form > div:nth-child(5) > label > input');
     console.log("勾選教師身分...");
-    await page.click('body > div.UIModal.UIModal-container.is-white.is-open.UIModal--fullScreen.SignupPromptModalNew--fullPageExperiment > div > div.UIModalBody > section > div.a1pcnvbg > div > form > div.UIDiv.TosCheckbox > label > input');
+    await page.click('body > div:nth-child(13) > div > div > div.c1yw38c3.c1cv2anc > section > div.avsxyiq > div > form > div.UIDiv.TosCheckbox.is-prechecked > label > input');
     console.log("勾選同意條款...");
     await page.evaluate(async() => {
-        document.querySelector('body > div.UIModal.UIModal-container.is-white.is-open.UIModal--fullScreen.SignupPromptModalNew--fullPageExperiment > div > div.UIModalBody > section > div.a1pcnvbg > div > form > button').disabled = false;
+        document.querySelector('body > div:nth-child(13) > div > div > div.c1yw38c3.c1cv2anc > section > div.avsxyiq > div > form > button').disabled = false;
     });
-    await page.click('body > div.UIModal.UIModal-container.is-white.is-open.UIModal--fullScreen.SignupPromptModalNew--fullPageExperiment > div > div.UIModalBody > section > div.a1pcnvbg > div > form > button');
+    await page.click('body > div:nth-child(13) > div > div > div.c1yw38c3.c1cv2anc > section > div.avsxyiq > div > form > button');
     console.log("註冊完成");
     //await emailpage.bringToFront();
     const varify = await browser.newPage();
@@ -69,8 +69,8 @@ process.on('uncaughtException', function(err) {
     }
     console.log("收到驗證信");
     await varify.waitForNavigation();
-    await varify.waitForSelector('#tab1 > div:nth-child(1) > table > tbody > tr > td > table > tbody > tr > td > table > tbody > tr:nth-child(2) > td > table > tbody > tr > td > table > tbody > tr > td:nth-child(2) > table > tbody > tr:nth-child(2) > td > table > tbody > tr > td > a');
-    await varify.click('#tab1 > div:nth-child(1) > table > tbody > tr > td > table > tbody > tr > td > table > tbody > tr:nth-child(2) > td > table > tbody > tr > td > table > tbody > tr > td:nth-child(2) > table > tbody > tr:nth-child(2) > td > table > tbody > tr > td > a');
+    await varify.waitForSelector('#tab1 > div:nth-child(1) > table > tbody > tr > td > table:nth-child(2) > tbody > tr > td > table > tbody > tr > td > table > tbody > tr > td > table > tbody > tr > td > table > tbody > tr > td > table > tbody > tr:nth-child(2) > td > table > tbody > tr > td > a');
+    await varify.click('#tab1 > div:nth-child(1) > table > tbody > tr > td > table:nth-child(2) > tbody > tr > td > table > tbody > tr > td > table > tbody > tr > td > table > tbody > tr > td > table > tbody > tr > td > table > tbody > tr:nth-child(2) > td > table > tbody > tr > td > a');
     console.log("點擊鏈結驗證帳號");
     //await varify.waitForTimeout();
     async function checkEmailFn() {
@@ -83,9 +83,9 @@ process.on('uncaughtException', function(err) {
         await varify.waitForTimeout(1000);
         count++;
         let success = await varify.evaluate(async() => {
-            let mailer = document.querySelector('#maillist > tbody > tr:nth-child(2) > td:nth-child(2) > a');
-            if (mailer.innerText != "請確認你在Quizlet的電郵位址") return false;
-            if (mailer.innerText === "請確認你在Quizlet的電郵位址") mailer.click();
+            let mailer = document.querySelector('#maillist > tbody > tr:nth-child(2) > td:nth-child(1) > a');
+            if (mailer.innerText != "Quizlet <account@account.quizlet.com>") return false;
+            if (mailer.innerText === "Quizlet <account@account.quizlet.com>") mailer.click();
             return true;
         });
         return success;
