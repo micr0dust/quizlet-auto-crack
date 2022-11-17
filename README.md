@@ -8,4 +8,3 @@
 2. Unzip.
 3. Click index.exe to launch program.
 4. Paste invite link get from Quizlet and get 30 days premium.
-
