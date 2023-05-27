@@ -21,9 +21,10 @@ function getInput(question) {
 (async() => {
     const browser = await puppeteer.launch({
         executablePath: './chromium/chrome.exe',
-        headless: false,
+        headless: true,
         devtools: true
     });
+    const userAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36';
     console.log("\n");
     console.log("  /$$$$$$            /$$           /$$             /$$");
     console.log(" /$$__  $$          |__/          | $$            | $$");
@@ -33,74 +34,122 @@ function getInput(question) {
     console.log("| $$/$$ $$| $$  | $$| $$  /$$__/  | $$| $$_____/  | $$ /$$");
     console.log("|  $$$$$$/|  $$$$$$/| $$ /$$$$$$$$| $$|  $$$$$$$  |  $$$$/");
     console.log(" \\____ $$$ \\______/ |__/|________/|__/ \\_______/   \\___/");
-    console.log("      \\__/        -- Auto crack for premium --");
+    console.log("      \\__/        -- Auto get Quizlet Plus 30 days --");
     console.log("                                           -Made by Microdust\n\n");
-    const URL = await getInput('\x1b[33mYour teacher invite link： \x1b[0m');
-    let url = URL || "https://quizlet.com/teacher-referral-invite/microdust__?i=41jk1e&x=16qt";
-    let count = 0;
-    console.log("Trying to get temporary email ...");
-    const emailpage = await browser.newPage();
-    await emailpage.goto('http://10minutemail.net');
-    await emailpage.waitForTimeout(1000);
-    await emailpage.waitForSelector('#fe_text');
-    const email = await emailpage.evaluate(async() => {
+    try {
+        console.log("Trying to get temporary email ...");
+        const emailPage = await browser.newPage();
+        await emailPage.setUserAgent(userAgent);
+        const email1 = await getNewEmail(emailPage);
+        console.log(`Got mail address: \x1b[33m${email1}\x1b[0m`);
+        
+        const quizletPage1 = await browser.newPage();
+        await quizletPage1.setUserAgent(userAgent);
+        await quizletPage1.goto("https://quizlet.com/sign-up");
+        const account = await createAccount(quizletPage1,email1);
+        await verifyEmail(emailPage);
+        
+        const context = await browser.createIncognitoBrowserContext();
+
+        const emailPage2 = await context.newPage();
+        await emailPage2.setUserAgent(userAgent);
+        const email2 = await getNewEmail(emailPage2);
+        console.log(`Got mail address: \x1b[33m${email2}\x1b[0m`);
+        const quizletPage2 = await context.newPage();
+        await quizletPage2.setUserAgent(userAgent);
+        await quizletPage2.goto(account.code);
+        await quizletPage2.waitForSelector('div.PrismicCallToAction--container > a');
+        await quizletPage2.click('div.PrismicCallToAction--container > a');
+        const account2 = await createAccount(quizletPage2,email2);
+        await verifyEmail(emailPage2);
+        console.log(account);
+        
+        //await emailpage.bringToFront();
+        await browser.close();
+        //await page.screenshot({ path: 'result.png' });
+    } catch (error) {
+        console.log(error);
+    }
+})();
+
+async function getNewEmail(page){
+    await page.bringToFront();
+    await page.goto('https://10minutemail.net/new.html');
+    await page.waitForTimeout(1000);
+    await page.waitForSelector('#fe_text');
+    return await page.evaluate(async() => {
         return document.querySelector('#fe_text').value;
     });
-    console.log("Got mail address: " + email);
-    const page = await browser.newPage();
-    console.log("Jump to invite link:");
-    console.log(`\x1b[32m${url}\x1b[0m`);
-    await page.goto(url);
+}
+async function createAccount(page,email){
+    await page.bringToFront();
     //await page.waitForTimeout(1000);
-    await page.click('#page > section:nth-child(1) > div > div > div.PrismicTextCallout-description > div.UIDiv.PrismicTextCallout-cta.PrismicTextCallout--descriptionLeft > div > a');
-    console.log("Accept invite.");
-    //await page.waitForNavigation();
-    await emailpage.waitForTimeout(1000);
     console.log("Trying to register with email ...");
-    await page.waitForSelector('body > div:nth-child(13) > div > div > div.c1yw38c3.c1cv2anc > section > div.avsxyiq > div > form > div.buq5sud > div > div > div');
-    await page.select('body > div:nth-child(13) > div > div > div.c1yw38c3.c1cv2anc > section > div.avsxyiq > div > form > div.buq5sud > div > div > div > div:nth-child(2) > select', '6');
-    await page.select('body > div:nth-child(13) > div > div > div.c1yw38c3.c1cv2anc > section > div.avsxyiq > div > form > div.buq5sud > div > div > div > div:nth-child(3) > select', '4');
-    await page.evaluate(async() => {
-        document.querySelector('body > div:nth-child(13) > div > div > div.c1yw38c3.c1cv2anc > section > div.avsxyiq > div > form > div.buq5sud > div > div > div > div:nth-child(1) > select').value = '1989';
-    });
-    await page.select('body > div:nth-child(13) > div > div > div.c1yw38c3.c1cv2anc > section > div.avsxyiq > div > form > div.buq5sud > div > div > div > div:nth-child(1) > select', '1989');
+    const yearStr=(new Date().getFullYear()-23).toString();
+    const monthStr=(Math.floor((Math.random() * 12) + 1)).toString();
+    const dayStr=(Math.floor((Math.random() * 28) + 1)).toString();
+    // await page.evaluate(async() => {
+    //     document.querySelector('body > div:nth-child(11) > div > div > div.c1i2nkrh > section > div.a1731mpn > div > form > div.b19yogmb > div > div > div > div:nth-child(1) > select').value = yearStr;
+    // });
+    await page.waitForSelector('select[name="birth_year"]');
+    await page.select('select[name="birth_year"]', yearStr);
+    await page.waitForSelector('select[name="birth_month"]');
+    await page.select('select[name="birth_month"]', monthStr);
+    await page.waitForSelector('select[name="birth_day"]');
+    await page.select('select[name="birth_day"]', dayStr);
+    await page.waitForSelector('#email');
     await page.type('#email', email);
-    console.log(`Account (Email): \x1b[31m${email}\x1b[0m`);
-    const password = "IJustWantToCrack";
+    console.log(`Account (Email): \x1b[33m${email}\x1b[0m`);
+    const password = "1Ju5tWantAn5wer";
+    await page.waitForSelector('#password1');
     await page.type('#password1', password);
-    console.log(`Password: \x1b[31m${password}\x1b[0m`);
-    await page.click('body > div:nth-child(13) > div > div > div.c1yw38c3.c1cv2anc > section > div.avsxyiq > div > form > div:nth-child(5) > label > input');
+    console.log(`Password: \x1b[33m${password}\x1b[0m`);
+    try {
+        await page.click('input[name="is_free_teacher"]');
+    } catch {
+        await page.click('#is_teacher');
+    }
     console.log("Choose the teacher identity...");
-    await page.click('body > div:nth-child(13) > div > div > div.c1yw38c3.c1cv2anc > section > div.avsxyiq > div > form > div.UIDiv.TosCheckbox.is-prechecked > label > input');
+    await page.waitForSelector('input[name="TOS"]');
+    await page.click('input[name="TOS"]');
     console.log("Accept policy...");
-    await page.evaluate(async() => {
-        document.querySelector('body > div:nth-child(13) > div > div > div.c1yw38c3.c1cv2anc > section > div.avsxyiq > div > form > button').disabled = false;
-    });
-    await page.click('body > div:nth-child(13) > div > div > div.c1yw38c3.c1cv2anc > section > div.avsxyiq > div > form > button');
+    // await page.evaluate(async() => {
+    //     document.querySelector('body > div:nth-child(13) > div > div > div.c1yw38c3.c1cv2anc > section > div.avsxyiq > div > form > button').disabled = false;
+    // });
+    await page.waitForSelector('button[type="submit"]:not([disabled])');
+    await page.click('button[type="submit"]');
     console.log("Register finish");
-    //await emailpage.bringToFront();
-    const varify = await browser.newPage();
-    await varify.goto('https://10minutemail.net');
-    await varify.waitForTimeout(1000);
+    await page.waitForTimeout(1000);
+    await page.goto('https://quizlet.com/refer-a-teacher');
+    console.log("Getting invite code");
+    await page.waitForSelector('#ReferralsTarget > div > div.UIDiv.ReferrerShareLinks > div > div.lj2a22u.cgllsbs > div.id7l83i > label > input');
+    const inviteCode = await page.evaluate(async() => {
+        return document.querySelector('#ReferralsTarget > div > div.UIDiv.ReferrerShareLinks > div > div.lj2a22u.cgllsbs > div.id7l83i > label > input').value;
+    });
+    console.log("invite code got");
+    return {
+        email: email,
+        name: email.split('@')[0],
+        password: password,
+        code: inviteCode
+    }
+}
+async function verifyEmail(page){
+    await page.bringToFront();
     console.log("Wait for verify mail from Quizlet...");
     if (!(await checkEmailFn())) {
         while (!(await checkEmailFn()));
     }
-    console.log("Received verify mail");
-    await varify.waitForNavigation();
-    await varify.waitForSelector('#tab1 > div:nth-child(1) > table > tbody > tr > td > table:nth-child(2) > tbody > tr > td > table > tbody > tr > td > table > tbody > tr > td > table > tbody > tr > td > table > tbody > tr > td > table > tbody > tr:nth-child(2) > td > table > tbody > tr > td > a');
-    await varify.click('#tab1 > div:nth-child(1) > table > tbody > tr > td > table:nth-child(2) > tbody > tr > td > table > tbody > tr > td > table > tbody > tr > td > table > tbody > tr > td > table > tbody > tr > td > table > tbody > tr:nth-child(2) > td > table > tbody > tr > td > a');
-    console.log("Click for verify");
-    //await varify.waitForTimeout();
     async function checkEmailFn() {
+        let count = 0;
         if (count === 60) {
-            await varify.reload({ waitUntil: ["networkidle0", "domcontentloaded"] });
+            await page.reload({ waitUntil: ["networkidle0", "domcontentloaded"] });
             console.log("Refreshing website and waiting for mail...");
             count = 0;
         }
-        await varify.waitForTimeout(1000);
+        await page.waitForTimeout(1000);
         count++;
-        let success = await varify.evaluate(async() => {
+        let success = await page.evaluate(async() => {
             let mailer = document.querySelector('#maillist > tbody > tr:nth-child(2) > td:nth-child(1) > a');
             if (mailer.innerText != "Quizlet <account@account.quizlet.com>") return false;
             if (mailer.innerText === "Quizlet <account@account.quizlet.com>") mailer.click();
@@ -108,8 +157,16 @@ function getInput(question) {
         });
         return success;
     }
+    console.log("Received verify mail");
+    await page.waitForNavigation();
+    await page.waitForSelector('td.em_defaultlink.em_cta > a');
+    //await page.click('td.em_defaultlink.em_cta > a');
+    const verifyLink = await page.evaluate(async() => {
+        return document.querySelector('td.em_defaultlink.em_cta > a').href;
+    });
+    await page.goto(verifyLink);
+    console.log("Click for verify");
+    await page.waitForSelector('.UILink');
     console.log("\x1b[32msuccess\x1b[0m");
-    await varify.waitForTimeout(1000);
-    await page.screenshot({ path: 'result.png' });
-    await browser.close();
-})();
+    
+}
