@@ -1,5 +1,7 @@
 const puppeteer = require('puppeteer-extra');
 const AdblockerPlugin = require('puppeteer-extra-plugin-adblocker');
+const checkUpdate = require('check-update-github');
+const pkg = require('./package.json');
 puppeteer.use(AdblockerPlugin());
 const readline = require('readline');
 
@@ -17,7 +19,39 @@ function getInput(question) {
 }
 
 //pkg index.js -t node14-win-x64 --public
-
+checkUpdate({
+    name: pkg.name,
+    currentVersion: pkg.version,
+    user: 'micr0dust',
+    branch: 'main'
+}, function(err, latestVersion, defaultMessage) {
+    if (!err) {
+        if (latestVersion != pkg.version) {
+            console.log("\x1b[44m");
+            console.log("\x1b[0m");
+            console.log("\x1b[44m  \x1b[0m");
+            console.log(`\x1b[44m  \x1b[0m     \x1b[33mNew releases! \x1b[32m(${latestVersion})`);
+            console.log("\x1b[44m  \x1b[0m     \x1b[0mhttps://github.com/micr0dust/quizlet-auto-crack");
+            console.log("\x1b[44m  \x1b[0m\n\x1b[44m");
+            console.log("\x1b[0m");
+        } else if (latestVersion == pkg.version) {
+            console.log("\x1b[42m");
+            console.log("\x1b[0m");
+            console.log("\x1b[42m  \x1b[0m");
+            console.log(`\x1b[42m  \x1b[0m     \x1b[33mAlready the latest version! \x1b[32m(${latestVersion})`);
+            console.log("\x1b[42m  \x1b[0m     \x1b[0mhttps://github.com/micr0dust/quizlet-auto-crack");
+            console.log("\x1b[42m  \x1b[0m\n\x1b[42m");
+            console.log("\x1b[0m");
+        }
+    } else {
+        console.log("\x1b[41m");
+        console.log("\x1b[0m");
+        console.log("\x1b[41m  \x1b[0m");
+        console.log(`\x1b[41m  \x1b[0m     \x1b[33mAn error occurred in version detection, please check whether the current version is the latest`);
+        console.log("\x1b[41m  \x1b[0m     \x1b[0mhttps://github.com/micr0dust/quizlet-auto-crack");
+        console.log("\x1b[41m  \x1b[0m\n\x1b[41m");
+        console.log("\x1b[0m");
+    }
 (async() => {
     const browser = await puppeteer.launch({
         executablePath: './chromium/chrome.exe',
@@ -71,7 +105,7 @@ function getInput(question) {
         console.log(error);
     }
 })();
-
+});
 async function getNewEmail(page){
     await page.bringToFront();
     await page.goto('https://10minutemail.net/new.html');
