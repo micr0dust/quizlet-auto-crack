@@ -9,6 +9,9 @@
 3. Click index.exe to launch program.
 4. Get Quizlet Plus 30 days!
 
+Some time exe may stuck, I don't know why, you can try press enter to keep it continue.
+Or you can clone this program and run nodejs local.
+
 ## Result
 
 ![Result](https://github.com/micr0dust/quizlet-auto-crack/raw/main/img/result.png?raw=true "Result")
