@@ -1,10 +1,16 @@
-# Quizlet-auto-crack (No use anymore)
+# Quizlet-auto-crack
 
-[![Download](https://github.com/wuilliam104286/image_saves/raw/master/img/button/btn-dl-red-en.png?raw=true "Download")](https://github.com/micr0dust/quizlet-auto-crack/releases/download/v1.0.0/quizlet-auto-crack.zip)
+[![Download](https://github.com/micr0dust/image_saves/raw/master/img/button/btn-dl-red-en.png?raw=true "Download")](https://github.com/micr0dust/quizlet-auto-crack/releases/download/v1.1.1/quizlet-auto-crack.zip)
 
 ## How to use
 
 1. Download the zip file.
 2. Unzip.
 3. Click index.exe to launch program.
-4. Paste invite link get from Quizlet and get 30 days premium.
+4. Get Quizlet Plus 30 days!
+
+## Result
+
+[![Result](https://github.com/micr0dust/quizlet-auto-crack/raw/main/img/result.png?raw=true "Result")
+
+[![Result](https://github.com/micr0dust/quizlet-auto-crack/raw/main/img/result2.png?raw=true "Result")
