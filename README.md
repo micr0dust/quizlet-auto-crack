@@ -1,6 +1,6 @@
 # Quizlet-auto-crack
 
-[![Download](https://github.com/micr0dust/image_saves/raw/master/img/button/btn-dl-red-en.png?raw=true "Download")](https://github.com/micr0dust/quizlet-auto-crack/releases/download/v1.1.1/quizlet-auto-crack.zip)
+[![Download](https://github.com/micr0dust/image_saves/raw/master/img/button/btn-dl-red-en.png?raw=true "Download")](https://github.com/micr0dust/quizlet-auto-crack/releases/download/v1.1.2/quizlet-auto-crack.zip)
 
 ## How to use
 
