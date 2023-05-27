@@ -156,9 +156,9 @@ async function createAccount(page,email){
     await page.waitForTimeout(1000);
     await page.goto('https://quizlet.com/refer-a-teacher');
     console.log("Getting invite code");
-    await page.waitForSelector('#ReferralsTarget > div > div.UIDiv.ReferrerShareLinks > div > div.lj2a22u.cgllsbs > div.id7l83i > label > input');
+    await page.waitForSelector('input.AssemblyInput-input[readonly]');
     const inviteCode = await page.evaluate(async() => {
-        return document.querySelector('#ReferralsTarget > div > div.UIDiv.ReferrerShareLinks > div > div.lj2a22u.cgllsbs > div.id7l83i > label > input').value;
+        return document.querySelector('input.AssemblyInput-input[readonly]').value;
     });
     console.log("invite code got");
     return {
