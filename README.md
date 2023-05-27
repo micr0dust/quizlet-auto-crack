@@ -11,6 +11,6 @@
 
 ## Result
 
-[![Result](https://github.com/micr0dust/quizlet-auto-crack/raw/main/img/result.png?raw=true "Result")
+![Result](https://github.com/micr0dust/quizlet-auto-crack/raw/main/img/result.png?raw=true "Result")
 
-[![Result](https://github.com/micr0dust/quizlet-auto-crack/raw/main/img/result2.png?raw=true "Result")
+![Result](https://github.com/micr0dust/quizlet-auto-crack/raw/main/img/result2.png?raw=true "Result")
