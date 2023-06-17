@@ -2,7 +2,6 @@ const puppeteer = require('puppeteer-extra');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 const AdblockerPlugin = require('puppeteer-extra-plugin-adblocker');
 const checkUpdate = require('check-update-github');
-//const randomUseragent = require('random-useragent');
 const pkg = require('./package.json');
 puppeteer.use(AdblockerPlugin());
 puppeteer.use(StealthPlugin());
@@ -20,7 +19,7 @@ function getInput(question) {
         });
     });
 }
-
+//nexe -t windows-x64-12.15.0
 //pkg index.js -t node14-win-x64 --public
 checkUpdate({
     name: pkg.name,
@@ -57,14 +56,10 @@ checkUpdate({
     }
 (async() => {
     const browser = await puppeteer.launch({
-        executablePath: './chromium/chrome.exe',
         headless: true,
         devtools: true
     });
     const userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36";
-    //  randomUseragent.getRandom(function (ua) {
-    //     return ua.osName==="Windows";
-    // });
     console.log(userAgent);
     console.log("\n");
     console.log("  /$$$$$$            /$$           /$$             /$$");
@@ -88,6 +83,7 @@ checkUpdate({
         await quizletPage1.setUserAgent(userAgent);
         await quizletPage1.goto("https://quizlet.com/sign-up");
         const account = await createAccount(quizletPage1,email1);
+        const inviteCode = await getInviteCode(quizletPage1);
         await verifyEmail(emailPage);
         
         const context = await browser.createIncognitoBrowserContext();
@@ -98,7 +94,7 @@ checkUpdate({
         console.log(`Got mail address: \x1b[33m${email2}\x1b[0m`);
         const quizletPage2 = await context.newPage();
         await quizletPage2.setUserAgent(userAgent);
-        await quizletPage2.goto(account.code);
+        await quizletPage2.goto(inviteCode);
         await quizletPage2.waitForSelector('div.PrismicCallToAction--container > a');
         await quizletPage2.click('div.PrismicCallToAction--container > a');
         const account2 = await createAccount(quizletPage2,email2);
@@ -125,6 +121,12 @@ async function getNewEmail(page){
 async function createAccount(page,email){
     await page.bringToFront();
     //await page.waitForTimeout(1000);
+    try {
+        await page.evaluate(async() => {
+            document.querySelector('button[aria-label="Continue with email"]').click();
+        });
+    } catch (error) {
+    }
     console.log("Trying to register with email ...");
     const yearStr=(new Date().getFullYear()-23).toString();
     const monthStr=(Math.floor((Math.random() * 12) + 1)).toString();
@@ -161,8 +163,18 @@ async function createAccount(page,email){
     await page.waitForSelector('button[type="submit"]:not([disabled])');
     await page.click('button[type="submit"]');
     console.log("Register finish");
-    await page.waitForSelector('button[aria-label="Create class"]');
+    try {
+        await page.waitForSelector('button[aria-label="Create class"]');
+    } catch (error) {
+    }
     //await page.waitForTimeout(1000000);
+    return {
+        email: email,
+        name: email.split('@')[0],
+        password: password
+    }
+}
+async function getInviteCode(page){
     await page.goto('https://quizlet.com/refer-a-teacher');
     console.log("Getting invite code");
     await page.waitForSelector('input.AssemblyInput-input[readonly]');
@@ -170,12 +182,7 @@ async function createAccount(page,email){
         return document.querySelector('input.AssemblyInput-input[readonly]').value;
     });
     console.log("invite code got");
-    return {
-        email: email,
-        name: email.split('@')[0],
-        password: password,
-        code: inviteCode
-    }
+    return inviteCode;
 }
 async function verifyEmail(page){
     await page.bringToFront();
