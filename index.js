@@ -1,8 +1,11 @@
 const puppeteer = require('puppeteer-extra');
+const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 const AdblockerPlugin = require('puppeteer-extra-plugin-adblocker');
 const checkUpdate = require('check-update-github');
+//const randomUseragent = require('random-useragent');
 const pkg = require('./package.json');
 puppeteer.use(AdblockerPlugin());
+puppeteer.use(StealthPlugin());
 const readline = require('readline');
 
 const rl = readline.createInterface({
@@ -58,7 +61,11 @@ checkUpdate({
         headless: true,
         devtools: true
     });
-    const userAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36';
+    const userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36";
+    //  randomUseragent.getRandom(function (ua) {
+    //     return ua.osName==="Windows";
+    // });
+    console.log(userAgent);
     console.log("\n");
     console.log("  /$$$$$$            /$$           /$$             /$$");
     console.log(" /$$__  $$          |__/          | $$            | $$");
@@ -145,15 +152,17 @@ async function createAccount(page,email){
     }
     console.log("Choose the teacher identity...");
     await page.waitForSelector('input[name="TOS"]');
-    await page.click('input[name="TOS"]');
+    //await page.waitForTimeout(1000000);
+    //await page.click('input[name="TOS"]');
+    await page.evaluate(async() => {
+        document.querySelector('input[name="TOS"]').click();
+    });
     console.log("Accept policy...");
-    // await page.evaluate(async() => {
-    //     document.querySelector('body > div:nth-child(13) > div > div > div.c1yw38c3.c1cv2anc > section > div.avsxyiq > div > form > button').disabled = false;
-    // });
     await page.waitForSelector('button[type="submit"]:not([disabled])');
     await page.click('button[type="submit"]');
     console.log("Register finish");
-    await page.waitForTimeout(1000);
+    await page.waitForSelector('button[aria-label="Create class"]');
+    //await page.waitForTimeout(1000000);
     await page.goto('https://quizlet.com/refer-a-teacher');
     console.log("Getting invite code");
     await page.waitForSelector('input.AssemblyInput-input[readonly]');
