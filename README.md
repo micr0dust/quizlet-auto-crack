@@ -12,8 +12,10 @@
 Some time exe may stuck, I don't know why, you can try press enter to keep it continue.
 Or you can clone this program and run nodejs local.
 
+## Video
+
+[![IMAGE ALT TEXT HERE](img/YT.png)](https://www.youtube.com/watch?v=LUbIiMV4UnI)
+
 ## Result
 
 ![Result](https://github.com/micr0dust/quizlet-auto-crack/raw/main/img/result.png?raw=true "Result")
-
-![Result](https://github.com/micr0dust/quizlet-auto-crack/raw/main/img/result2.png?raw=true "Result")
